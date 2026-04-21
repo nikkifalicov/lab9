@@ -1,0 +1,17 @@
+# virtual environments
+venv/
+.venv/
+env/
+
+# python cache
+__pycache__/
+*.pyc
+
+# mac
+.DS_Store
+
+# jupyter
+.ipynb_checkpoints/
+
+# vscode (optional)
+.vscode/

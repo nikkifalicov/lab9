@@ -2,66 +2,136 @@
 <html>
   <head>
     <title>Isomap</title>
-    <link rel="stylesheet" href="static/css/styles.css" />
+    <!-- <link rel="stylesheet" href="static/css/styles.css" /> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-    <script src="static/js/index.js"></script>
-  </head>
-  <body>
-    <div>
-      <form class="inputs">
-        <label for="dataset">Dataset: </label
-        ><select class="inputs" name="input" id="dataset">
-          <option value="swiss_roll">swiss_roll</option>
-          <option value="s_curve">s_curve</option>
-          <option value="digits">digits</option>
-        </select>
-        <br />
-        <label for="mode">Neighborhood graph mode: </label
-        ><select name="input" id="mode">
-          <option value="k-nearest-neighbor">k-nearest-neighbor</option>
-          <option value="r-ball">r-ball</option>
-        </select>
-        <br />
-        <label id="label-for-param" for="param">K</label>
-        <input id="param" type="range" min="3" max="50" step="1" name="range" />
-        <br />
-      </form>
-      <button id="submit">Submit</button>
-    </div>
-    <svg id="main" width="500" height="500"></svg>
-  </body>
-  <script>
-    function update_ui(value = undefined) {
-      let mode = d3.select("#mode").node().value;
-      if (mode === "k-nearest-neighbor") {
-        d3.select("#param")
-          .attr("min", 3)
-          .attr("max", 50)
-          .attr("value", value || 15)
-          .attr("step", 1);
-        d3.select("#label-for-param").text(
-          `K: ${d3.select("#param").attr("value")}`,
-        );
-      } else {
-        d3.select("#param")
-          .attr("min", 0.5)
-          .attr("max", 10)
-          .attr("value", value || 0.5)
-          .attr("step", 0.001);
-        d3.select("#label-for-param").text(
-          `R: ${d3.select("#param").attr("value")}`,
-        );
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+      body {
+        font-family: serif;
+        background: #f3f3f3;
+        margin: 0;
       }
-    }
 
-    update_ui();
-    d3.select("#mode").on("change", (event) => update_ui());
-    d3.select("#param").on("input", () => {
-      update_ui(d3.select("#param").node().value);
-    });
+      .page {
+        width: 1200px;
+        margin: 20px auto;
+      }
 
-    d3.select("#submit").on("click", () => {
-      //TODO: call index.js function that can handle all of the new information
-    });
-  </script>
+      h1, h2 {
+        text-align: center;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 48px;
+        font-weight: 700;
+      }
+
+      h2 {
+        font-size: 32px;
+        margin-top: 16px;
+        margin-bottom: 40px;
+      }
+
+      .top-row {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+      }
+
+      .left-panel,
+      .right-panel {
+        flex: 1;
+      }
+
+      #original3d {
+        width: 520px;
+        height: 520px;
+        background: #e9e9e9;
+        overflow: visible;
+      }
+
+      #main {
+        background: #e9e9e9;
+      }
+
+      .controls {
+        margin-bottom: 16px;
+        font-family: sans-serif;
+        font-size: 18px;
+      }
+
+      .control-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 14px;
+        gap: 12px;
+      }
+
+      .control-row label {
+        width: 170px;
+      }
+
+      select, input[type="number"] {
+        width: 200px;
+        font-size: 16px;
+      }
+
+      #param {
+        width: 180px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 6px 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <h1>Lab 10: Dimensionality Reduction - Isomap</h1>
+
+      <div class="top-row">
+        <div class="left-panel">
+          <div id="original3d"></div>
+        </div>
+
+        <div class="right-panel">
+          <div class="controls">
+            <div class="control-row">
+              <label for="dataset">Dataset</label>
+              <select id="dataset">
+                <option value="swiss_roll">swiss_roll</option>
+                <option value="s_curve">s_curve</option>
+                <option value="digits">digits</option>
+              </select>
+            </div>
+
+            <div class="control-row">
+              <label for="mode">Neighborhood graph mode</label>
+              <select id="mode">
+                <option value="k-nearest-neighbor">k-nearest-neighbor</option>
+                <option value="r-ball">r-ball</option>
+              </select>
+            </div>
+
+            <div class="control-row">
+              <label id="label-for-param" for="param">K</label>
+              <input id="param-number" type="number" value="7" min="3" max="50" step="1" />
+              <input id="param" type="range" value="7" min="3" max="50" step="1" />
+            </div>
+
+            <div class="control-row">
+              <button id="submit" type="button">Submit</button>
+            </div>
+          </div>
+
+          <svg id="main" width="620" height="420"></svg>
+        </div>
+      </div>
+    </div>
+
+    <script src="static/js/index.js"></script>
+  </body>
 </html>
